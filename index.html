@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>APHG Calculator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: #0f172a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #e5e7eb;
+    }
+
+    .wrapper {
+        width: 100%;
+        max-width: 860px;
+        padding: 20px;
+    }
+
+    .card {
+        background: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 16px;
+        padding: 22px;
+        display: flex;
+        gap: 24px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .left {
+        flex: 1;
+    }
+
+    .right {
+        width: 280px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-left: 1px solid #1f2937;
+        padding-left: 24px;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 18px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .sub {
+        font-size: 13px;
+        color: #9ca3af;
+        margin-top: 4px;
+        margin-bottom: 18px;
+    }
+
+    label {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #374151;
+        background: #0b1220;
+        color: #e5e7eb;
+        outline: none;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        margin-top: 10px;
+        width: 100%;
+        padding: 11px;
+        border: none;
+        border-radius: 10px;
+        background: #3b82f6;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.15s;
+    }
+
+    button:hover {
+        background: #2563eb;
+    }
+
+    .ap-big {
+        font-size: 92px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 10px;
+        transition: transform 0.2s ease;
+    }
+
+    .animate {
+        transform: scale(1.12);
+    }
+
+    .status {
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .score-small {
+        font-size: 16px;
+        color: #9ca3af;
+    }
+
+    .info {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 12px;
+        background: #0b1220;
+        border: 1px solid #1f2937;
+        font-size: 12px;
+        color: #9ca3af;
+        line-height: 1.4;
+    }
+
+    .info b {
+        color: #e5e7eb;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+    <div class="card">
+
+        <div class="left">
+            <h1>AP Human Geography</h1>
+            <div class="sub">Composite score calculator (/120)</div>
+
+            <label>MCQ ( /60 )</label>
+            <input id="mcq" type="number" placeholder="Enter MCQ score">
+
+            <label>FRQ 1 ( /7 )</label>
+            <input id="frq1" type="number" placeholder="Score">
+
+            <label>FRQ 2 ( /7 )</label>
+            <input id="frq2" type="number" placeholder="Score">
+
+            <label>FRQ 3 ( /7 )</label>
+            <input id="frq3" type="number" placeholder="Score">
+
+            <button id="btn" onclick="calc()">Calculate</button>
+
+            <div class="info">
+                <b>How scoring works:</b><br>
+                MCQ (out of 60) + FRQs scaled to 60 using (FRQ × 20/7).<br>
+                Final score is out of 120.<br>
+                97–120 = AP 5, 80–96 = AP 4, 64–79 = AP 3.
+            </div>
+        </div>
+
+        <div class="right">
+            <div id="level" class="ap-big">-</div>
+            <div id="status" class="status">—</div>
+            <div id="score" class="score-small">--</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function calc() {
+    let btn = document.getElementById("btn");
+    btn.disabled = true;
+
+    let mcq = Number(document.getElementById("mcq").value);
+    let frq1 = Number(document.getElementById("frq1").value);
+    let frq2 = Number(document.getElementById("frq2").value);
+    let frq3 = Number(document.getElementById("frq3").value);
+
+    let frqTotal = (frq1 + frq2 + frq3) * (20 / 7);
+    let finalScore = mcq + frqTotal;
+
+    let level = "";
+    let statusText = "";
+    let statusColor = "";
+
+    if (finalScore >= 97) {
+        level = "5";
+        statusText = "PASSING";
+        statusColor = "#22c55e";
+    } else if (finalScore >= 80) {
+        level = "4";
+        statusText = "PASSING";
+        statusColor = "#22c55e";
+    } else if (finalScore >= 64) {
+        level = "3";
+        statusText = "PASSING";
+        statusColor = "#22c55e";
+    } else {
+        level = "2";
+        statusText = "NOT PASSING";
+        statusColor = "#eab308";
+    }
+
+    let levelEl = document.getElementById("level");
+    let statusEl = document.getElementById("status");
+    let scoreEl = document.getElementById("score");
+
+    let interval = setInterval(() => {
+        levelEl.textContent = Math.floor(Math.random() * 5) + 1;
+        levelEl.classList.toggle("animate");
+        scoreEl.textContent = (Math.random() * 120).toFixed(1);
+    }, 80);
+
+    setTimeout(() => {
+        clearInterval(interval);
+
+        levelEl.textContent = level;
+        statusEl.innerHTML = `<span style="color:${statusColor}">${statusText}</span>`;
+        scoreEl.textContent = finalScore.toFixed(1);
+
+        btn.disabled = false;
+    }, 1400);
+}
+</script>
+
+</body>
+</html>
